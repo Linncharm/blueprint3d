@@ -134,10 +134,22 @@ export class Scene {
       }
 
       this.itemLoadingCallbacks.fire();
-      this.loader.load(
-        fileName,
-        loaderCallback,
-        undefined // TODO_Ekki
-      );
+
+      // Wrap in try-catch for better error handling
+      try {
+        this.loader.load(
+          fileName,
+          loaderCallback,
+          undefined, // TODO_Ekki
+          (error: any) => {
+            console.error('Error loading model:', fileName, error);
+            alert('Failed to load model: ' + fileName + '\n\nThis is a known issue with the old three.js version.\nTry a simpler model or upgrade three.js.');
+            this.itemLoadingCallbacks.fire();
+          }
+        );
+      } catch (e) {
+        console.error('Exception loading model:', e);
+        this.itemLoadingCallbacks.fire();
+      }
     }
   }

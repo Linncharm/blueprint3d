@@ -511,7 +511,6 @@ export function initBlueprint3d() {
   const opts = {
     floorplannerElement: 'floorplanner-canvas',
     threeElement: '#viewer',
-    threeCanvasElement: 'three-canvas',
     textureDir: "models/textures/",
     widget: false
   };

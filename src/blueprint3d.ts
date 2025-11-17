@@ -11,9 +11,6 @@ export interface Options {
   threeElement?: string;
 
   /** */
-  threeCanvasElement? : string;
-
-  /** */
   floorplannerElement?: string;
 
   /** The texture directory. */
@@ -33,11 +30,11 @@ export class Blueprint3d {
    * @param options The initialization options.
    */
   constructor(options: Options) {
-    this.model = new Model(options.textureDir);
-    this.three = new Main(this.model, options.threeElement, options.threeCanvasElement, {});
+    this.model = new Model(options.textureDir || '');
+    this.three = new Main(this.model, options.threeElement || '', '', {});
 
     if (!options.widget) {
-      this.floorplanner = new Floorplanner(options.floorplannerElement, this.model.floorplan);
+      this.floorplanner = new Floorplanner(options.floorplannerElement || '', this.model.floorplan);
     }
     else {
       this.three.getController().enabled = false;

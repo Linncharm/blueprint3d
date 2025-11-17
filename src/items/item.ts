@@ -65,21 +65,31 @@ export abstract class Item extends THREE.Mesh {
      * @param scale TODO
      */
     constructor(protected model: Model, public metadata: Metadata, geometry: THREE.BufferGeometry, material: THREE.Material | THREE.Material[], position: THREE.Vector3, rotation: number, scale: THREE.Vector3) {
-      super();
+      // Center geometry in its bounding box BEFORE calling super
+      geometry.computeBoundingBox();
+
+      if (geometry.boundingBox) {
+        const centerTranslation = new THREE.Matrix4().makeTranslation(
+          - 0.5 * (geometry.boundingBox.max.x + geometry.boundingBox.min.x),
+          - 0.5 * (geometry.boundingBox.max.y + geometry.boundingBox.min.y),
+          - 0.5 * (geometry.boundingBox.max.z + geometry.boundingBox.min.z)
+        );
+        geometry.applyMatrix4(centerTranslation);
+
+        // Recompute after transformation
+        geometry.computeBoundingBox();
+        geometry.computeBoundingSphere();
+      }
+
+      // Call super with geometry and material (required in r181)
+      super(geometry, material);
 
       this.scene = this.model.scene;
-      this.geometry = geometry;
-      this.material = material;
-
       this.errorColor = 0xff0000;
-
       this.resizable = metadata.resizable;
 
       this.castShadow = true;
       this.receiveShadow = false;
-
-      this.geometry = geometry;
-      this.material = material;
 
       if (position) {
         this.position.copy(position);
@@ -88,14 +98,6 @@ export abstract class Item extends THREE.Mesh {
         this.position_set = false;
       }
 
-      // center in its boundingbox
-      this.geometry.computeBoundingBox();
-      this.geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(
-        - 0.5 * (this.geometry.boundingBox!.max.x + this.geometry.boundingBox!.min.x),
-        - 0.5 * (this.geometry.boundingBox!.max.y + this.geometry.boundingBox!.min.y),
-        - 0.5 * (this.geometry.boundingBox!.max.z + this.geometry.boundingBox!.min.z)
-      ));
-      this.geometry.computeBoundingBox();
       this.halfSize = this.objectHalfSize();
 
       if (rotation) {
@@ -158,7 +160,15 @@ export abstract class Item extends THREE.Mesh {
 
     /** */
     public initObject = function () {
+      console.log('Item initObject called', {
+        position: this.position,
+        halfSize: this.halfSize,
+        boundingBox: this.geometry.boundingBox
+      });
       this.placeInRoom();
+      console.log('After placeInRoom:', {
+        position: this.position
+      });
       // select and stuff
       this.scene.needsUpdate = true;
     };

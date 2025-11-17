@@ -4,6 +4,7 @@ import { EventEmitter } from '../core/events';
 import { Factory } from '../items/factory';
 import type { Item } from '../items/item';
 import type { Model } from './model';
+import { JSONLoader } from '../loaders/JSONLoader';
 
 /**
  * The Scene is a manager of Items and also links to a ThreeJS scene.
@@ -40,12 +41,8 @@ export class Scene {
       this.scene = new THREE.Scene();
 
       // init item loader
-      // Note: JSONLoader has been removed in r127+
-      // For now, we'll use ObjectLoader as a replacement
-      this.loader = new THREE.ObjectLoader();
-      if (this.loader.crossOrigin !== undefined) {
-        this.loader.crossOrigin = "";
-      }
+      // Use custom JSONLoader for old three.js JSON format models
+      this.loader = new JSONLoader();
     }
 
     /** Adds a non-item, basically a mesh, to the scene.
@@ -124,6 +121,7 @@ export class Scene {
       itemType = itemType || 1;
       var scope = this;
       var loaderCallback = function (geometry: THREE.BufferGeometry, materials: THREE.Material[]) {
+        // Custom JSONLoader already returns BufferGeometry
         var item = new (Factory.getClass(itemType))(
           scope.model,
           metadata, geometry,

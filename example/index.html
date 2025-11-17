@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Blueprint 3D - Example</title>
+    <title>Blueprint 3D Example</title>
 
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/example.css" rel="stylesheet">
 
-    <script src="js/three.min.js"></script>
-    <script src="js/blueprint3d.js"></script>
-
-    <script src="js/jquery.js"></script>
-    <script src="js/bootstrap.js"></script>
-    
-    <script src="js/items.js"></script>
-    <script src="js/example.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./js/three.min.js",
+          "jquery": "./js/jquery.js"
+        }
+      }
+    </script>
   </head>
 
   <body>
@@ -45,7 +45,7 @@
               <span id="context-menu-name" class="lead"></span>
               <br /><br />
               <button class="btn btn-block btn-danger" id="context-menu-delete">
-                <span class="glyphicon glyphicon-trash"></span> 
+                <span class="glyphicon glyphicon-trash"></span>
                 Delete Item
               </button>
             <br />
@@ -64,7 +64,7 @@
                   </div>
                   <div class="form-group">
                     <label class="col-sm-5 control-label">
-                      Depth 
+                      Depth
                     </label>
                     <div class="col-sm-6">
                       <input type="number" class="form-control" id="item-depth">
@@ -157,7 +157,7 @@
               <a href="#" class="btn btn-default bottom" id="zoom-in">
                 <span class="glyphicon glyphicon-zoom-in"></span>
               </a>
-              
+
               <span>&nbsp;</span>
 
               <a class="btn btn-default bottom" href="#" id="move-left" >
@@ -177,7 +177,7 @@
             </div>
 
             <div id="loading-modal">
-              <h1>Loading...</h1>  
+              <h1>Loading...</h1>
             </div>
           </div>
 
@@ -215,11 +215,30 @@
               <!-- Items added here by items.js -->
             </div>
           </div>
-      
+
         </div>
         <!-- End Right Column -->
       </div>
     </div>
+
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script type="module">
+      import { initItems } from './js/items.js';
+      import { initBlueprint3d } from './js/example.js';
+
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+          initItems();
+          initBlueprint3d();
+        });
+      } else {
+        // DOM already loaded
+        initItems();
+        initBlueprint3d();
+      }
+    </script>
 
   </body>
 </html>

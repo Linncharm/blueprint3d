@@ -6,7 +6,7 @@ export default defineConfig({
   publicDir: false,
   server: {
     port: 3000,
-    open: '/index-es6.html'
+    open: '/index.html'
   },
   resolve: {
     alias: {
@@ -16,7 +16,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'example/index-es6.html')
+        main: resolve(__dirname, 'example/index.html')
       }
     }
   }
